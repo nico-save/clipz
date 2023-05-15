@@ -28,6 +28,7 @@ export class ClipsListComponent implements OnInit, OnDestroy {
     this.clipService.pageClips = []
   }
 
+
   handleScroll = () => {
     const {scrollTop, offsetHeight} = document.documentElement;
     const { innerHeight} = window;

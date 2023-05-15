@@ -1,0 +1,9 @@
+{
+  "nav" : {
+    "login": "Connection / Inscription",
+    "manage": "Gérer",
+    "upload": "Partager",
+    "logout": "Déconnection",
+    "about": "À propos"
+  }
+}

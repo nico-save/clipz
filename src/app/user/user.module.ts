@@ -18,7 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
   ],
   exports: [
     AuthModalComponent

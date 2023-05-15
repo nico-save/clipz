@@ -1,0 +1,9 @@
+{
+  "nav" : {
+    "login": "Login / Register",
+    "manage": "Manage",
+    "upload": "Upload",
+    "logout": "Logout",
+    "about": "About"
+  }
+}

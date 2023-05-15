@@ -1,0 +1,36 @@
+  <!-- Create Modal -->
+  <app-modal modalID="addComment">
+    <div *ngIf="(auth2.isAuthenticated$ | async ); else toLoginMessage">
+
+    <p class="text-2xl font-bold">Add Comment</p>
+    <app-alert *ngIf="showAlert" [color]="alertColor">
+      <p>{{alertMsg}}</p>
+    </app-alert>
+
+    <!-- Form -->
+    <form [formGroup]="createCommentForm" (ngSubmit)="submit()">
+      <!-- Title -->
+      <div class="mt-4">
+        <label class="block text-xl mb-4">Comment</label>
+        <app-input [control]="comment"  placeholder="Enter your comment" ></app-input>
+      </div>
+
+      <div class="mt-4 text-right">
+        <button [disabled]="inSubmission"
+        [ngClass]="{
+          'opacity-50': inSubmission,
+          'hover:bg-indigo-700': !inSubmission
+        }"
+         type="submit"
+         class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm rounded-md text-white bg-indigo-600 focus:outline-none">
+          Submit
+        </button>
+      </div>
+    </form>
+
+</div>
+  <ng-template #toLoginMessage >
+    <p class="font-bold text-center ">Vous devez être connecté pour effectuer cette action</p>
+    <p class="text-center m-8"> <a class="p-4 border text-center transition hover:text-indigo-400 hover:border-indigo-400" href="#" (click)="openLoginModal($event)">Login / Register</a></p>
+  </ng-template>
+  </app-modal>

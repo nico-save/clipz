@@ -1,0 +1,53 @@
+      <!-- Actions -->
+      <div *ngIf="(auth.isAuthenticated$ | async )" class="flex text-center text-2xl bg-gray-800 p-2 w-1/5 mt-8">
+        <a (click)="openModal($event, clip)" href="#" class="flex-1 p-2 border-right  border-gray-700 transition hover:text-indigo-400">
+          <span class="material-icons text-base">edit</span>
+        </a>
+
+        <ng-container *ngIf="(commentsById$ | async) as comments">
+          <div *ngIf="comments.length > 0" class="flex-1 p-2 border-l-2 rounded-br-2xl transition hover:text-indigo-400">
+            <a (click)="toggleComments($event)" href="#" >
+              <span class="material-icons text-base">{{show ? 'expand_less' : 'expand_more'}}</span>
+            </a>
+            </div>
+        </ng-container>
+        <ng-template #noComments>
+          <p>Aucun commentaire pour cet élément.</p>
+        </ng-template>
+      </div>
+
+
+
+<section *ngIf="show"  >
+
+ <!-- Display Comment List -->
+
+    <div *ngIf="(commentsById$ | async) as comments; else loading">
+      <div *ngIf="comments.length > 0; else noComments">
+        <ng-container *ngFor="let comment of (commentsById$ | async)">
+
+          <!-- Comment Item -->
+          <app-comment [comment]="comment"></app-comment>
+        </ng-container>
+      </div>
+
+      <!-- No comment message -->
+      <ng-template #noComments>
+        <p class="p-8">Aucun commentaire. Soyez le premier à <a
+           (click)="openModal($event, clip)"
+            href="#"
+            class="text-indigo-300 transition hover:text-indigo-400"
+            >commenter</a> ce clip.</p>
+      </ng-template>
+    </div>
+
+    <!-- Loading message -->
+    <ng-template #loading>
+      <p class="p-8">Chargement ...</p>
+    </ng-template>
+
+</section>
+
+<!-- Comment Create Modal -->
+<app-create [clip] ='clip' ></app-create>
+

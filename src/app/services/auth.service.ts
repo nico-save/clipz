@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/compat/auth'
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
+import firebase from 'firebase/compat/app';
 import IUser from '../models/user.model';
-import { Observable, delay, map, filter, switchMap, of } from 'rxjs';
+import { Observable, delay, map, filter, switchMap, of, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { ActivatedRoute , NavigationEnd} from '@angular/router';
 
@@ -28,11 +29,20 @@ constructor(
     this.isAuthenticatedWithDelay$ = this.isAuthenticated$.pipe(
       delay(1000)
     )
+
+
+
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       map(e => this.route.firstChild),
-      switchMap(route =>route?.data  ?? of({}))
+        /* subscribe to an observable in an observable */
+      switchMap(route => {
+
+        const child = route.firstChild;
+        return child ? child.data.pipe(take(1)) : of({});
+      })
     ).subscribe((data => {
+      console.log(data)
       this.redirect = data['authOnly'] ?? false
     }))
   }
@@ -72,5 +82,36 @@ constructor(
     if(this.redirect)
     await this.router.navigateByUrl('/')
 
+  }
+
+  private updateUserData(user) {
+    // Sets user data to firestore on login
+    const userRef: AngularFirestoreDocument<IUser> = this.usersCollection.doc(`${user.uid}`);
+
+    const data = {
+      uid: user.uid,
+      email: user.email,
+      name: user.displayName,
+      age: user.age,
+      phoneNumber: user.phoneNumber
+
+    }
+
+    return userRef.set(data, { merge: true })
+
+  }
+
+  async googleSignin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+      const credential = await this.auth.signInWithRedirect(provider);
+      console.log(credential)
+      return this.updateUserData(credential);
+
+    } catch (error) {
+
+      console.log(error)
+      return
+    }
   }
 }
